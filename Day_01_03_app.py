@@ -19,7 +19,7 @@ st.markdown("本系統採用 **OLS 標準化模型** 進行分析，確保在消
 # 2. 模擬數據生成 (假設你已有 df，此處建立範例數據)
 @st.cache_data
 def load_data():
-    pd.read_csv('retail_marketing_experiment.csv')
+    data = pd.read_csv('retail_marketing_experiment.csv')
     return df
 
 df = load_data()
