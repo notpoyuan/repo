@@ -20,7 +20,7 @@ st.markdown("本系統採用 **OLS 標準化模型** 進行分析，確保在消
 @st.cache_data
 def load_data():
     data = pd.read_csv('retail_marketing_experiment.csv')
-    return df
+    return data
 
 df = load_data()
 feature_cols = ['Social_Media_Ads', 'Search_Engine_Ads', 'Influencer_Marketing', 
