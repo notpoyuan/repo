@@ -64,18 +64,31 @@ with col1:
     st.table(roas_df.style.format({'每投入 1 元回報 (ROAS)': '{:.2f}', 'P-Value': '{:.4f}'}))
 
 with col2:
-    st.subheader("📉 預算削減損失模擬")
-    current_avg_X = X_raw.mean()
-    loss_per_unit = original_coefs * (current_avg_X * -cut_ratio)
+    st.subheader("📉 預算削減動態模擬表")
     
+    # 1. 取得當前平均預算作為基準
+    current_avg_X = X_raw.mean()
+    
+    # 2. 建立連動的 DataFrame
     summary_df = pd.DataFrame({
-        '渠道': feature_cols,
-        '當前平均預算': current_avg_X.values,
-        '預計削減金額': current_avg_X.values * cut_ratio,
-        '預計業績損失': loss_per_unit.values.clip(max=0) # 僅顯示負值
+        '行銷管道': feature_cols,
+        '目前平均預算': current_avg_X.values,
+        '預計削減預算': current_avg_X.values * cut_ratio,  # 隨 Slider 連動
+        '預計業績損失': (original_coefs.values * (current_avg_X.values * -cut_ratio)) # 隨 Slider 連動
     })
     
-    fig = px.bar(summary_df, x='渠道', y='預計業績損失', title=f"削減 {cut_ratio*100:.0f}% 預算之影響",
+    # 3. 顯示連動表格 (加上顏色標示)
+    st.dataframe(
+        summary_df.style.format({
+            '目前平均預算': '${:,.0f}',
+            '預計削減預算': '${:,.0f}',
+            '預計業績損失': '${:,.0f}'
+        }).background_gradient(subset=['預計業績損失'], cmap='Reds_r')
+    )
+
+    # 4. 下方圖形也會同步更新
+    fig = px.bar(summary_df, x='行銷管道', y='預計業績損失', 
+                 title=f"削減 {cut_ratio*100:.0f}% 預算之損失預估",
                  color='預計業績損失', color_continuous_scale='Reds_r')
     st.plotly_chart(fig, use_container_width=True)
 
