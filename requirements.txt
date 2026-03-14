@@ -5,3 +5,6 @@ statsmodels
 matplotlib
 scikit-learn
 plotly
+xgboost
+seaborn
+scipy
